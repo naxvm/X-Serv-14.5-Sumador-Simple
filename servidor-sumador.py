@@ -1,13 +1,30 @@
 #! /usr/bin/python3
 
 import socket
+import pickle
 
 mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 mySocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 mySocket.bind(('localhost', 1234))
 mySocket.listen(5)
 
-firstPetition = True
+
+def answer(objSocket, code, cookie, html):
+
+    sending = 'HTTP/1.1 '
+    if code == 200:
+        sending = sending + '200 OK\r\n'
+    else:
+        sending = sending + '404 Not Found\r\n'
+
+    if cookie:
+        sending = sending + 'Set-Cookie: ' + cookie
+
+    sending = sending + '\r\n\r\n' + html
+
+    objSocket.send(bytes(sending, 'utf-8'))
+
+
 
 try:
     while True:
