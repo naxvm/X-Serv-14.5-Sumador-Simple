@@ -27,12 +27,16 @@ def answer(objSocket, code, cookie, html):
 
 
 try:
+    firstPetition = True
     while True:
         print('Waiting for connections...')
         (recvSocket, address) = mySocket.accept()
         petition = recvSocket.recv(2048).decode('utf-8')
         print(petition)
-        recvOperand = int(petition.split()[1][1:]) # Operando que nos pasa el cliente
+        try:
+            recvOperand = int(petition.split()[1][1:]) # Operando que nos pasa el cliente
+        except ValueError:
+            continue
         if firstPetition:
             firstOperand = recvOperand
             recvSocket.send(bytes("HTTP/1.1 200 OK\r\n\r\n" +
